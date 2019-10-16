@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Platform, Image, Text, View, ScrollView } from 'react-native';
-import firebase,{Firebase} from 'react-native-firebase';
+import firebase from 'react-native-firebase';
 
 export default class App extends React.Component {
   constructor() {
@@ -10,10 +10,6 @@ export default class App extends React.Component {
 
   async componentDidMount():void {
     // TODO: You: Do firebase things
-     const { user } = await firebase.auth().signInAnonymously().then((result)=>{
-       console.warn("Auth",JSON.stringify(result));
-     });
-     console.warn('User -> ', user.toJSON());
     // await firebase.analytics().logEvent('foo', { bar: '123'});
   }
 
