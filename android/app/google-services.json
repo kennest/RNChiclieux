@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "223995985926",
+    "firebase_url": "https://coincool-d17a6.firebaseio.com",
+    "project_id": "coincool-d17a6",
+    "storage_bucket": "coincool-d17a6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223995985926:android:0ea6430cd3546e27",
+        "android_client_info": {
+          "package_name": "com.capsule.coincool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223995985926-3c789s0h3ksg1fjh696eia9nqkv1nc11.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWVd1ezl4khiTeKP_0cP72N8Gbp9jWcak"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223995985926-3c789s0h3ksg1fjh696eia9nqkv1nc11.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223995985926-qba5ad5sc6fftat0h73kah2mu9r55gru.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.codebox.chiclieux"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223995985926:android:b172315c1fb54e24bdc387",
+        "android_client_info": {
+          "package_name": "com.codebox.chiclieux"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223995985926-3c789s0h3ksg1fjh696eia9nqkv1nc11.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWVd1ezl4khiTeKP_0cP72N8Gbp9jWcak"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223995985926-3c789s0h3ksg1fjh696eia9nqkv1nc11.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "223995985926-qba5ad5sc6fftat0h73kah2mu9r55gru.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.codebox.chiclieux"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

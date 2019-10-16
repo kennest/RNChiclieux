@@ -1,4 +1,4 @@
-package com.rnchiclieux;
+package com.codebox.chiclieux;
 
 import com.facebook.react.ReactActivity;
 
