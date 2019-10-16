@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Platform, Image, Text, View, ScrollView } from 'react-native';
-
-import firebase from 'react-native-firebase';
+import firebase,{Firebase} from 'react-native-firebase';
 
 export default class App extends React.Component {
   constructor() {
@@ -11,9 +10,10 @@ export default class App extends React.Component {
 
   async componentDidMount():void {
     // TODO: You: Do firebase things
-    // const { user } = await firebase.auth().signInAnonymously();
-    // console.warn('User -> ', user.toJSON());
-
+     const { user } = await firebase.auth().signInAnonymously().then((result)=>{
+       console.warn("Auth",JSON.stringify(result));
+     });
+     console.warn('User -> ', user.toJSON());
     // await firebase.analytics().logEvent('foo', { bar: '123'});
   }
 
@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
   },
   modules: {
     margin: 20,
+    color:"#000"
   },
   modulesHeader: {
     fontSize: 16,
@@ -97,5 +98,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 4,
     textAlign: 'center',
+    color:"#000"
   }
 });

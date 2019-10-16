@@ -37,6 +37,8 @@ target 'RNChiclieux' do
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
 
   pod 'Firebase/Core', '~> 6.3.0'
+  pod 'Firebase/Firestore', '~> 6.3.0'
+  pod 'Firebase/Storage', '~> 6.3.0'
 
   target 'RNChiclieuxTests' do
     inherit! :search_paths
