@@ -1,0 +1,61 @@
+{
+  "name": "RNChiclieux",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "deploy-ios": "react-native run-ios --simulator \"iPhone 11 Pro Max\"",
+    "deploy-ios-2": "react-native run-ios --device \"iPhone wefly\"",
+    "deploy-android-1": "react-native run-android --deviceId \"0256613781403328\"",
+    "deploy-android-2": "react-native run-android --deviceId \"64937174268002\"",
+    "shake-android": "adb shell input keyevent 82",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@react-native-community/async-storage": "^1.6.2",
+    "@react-native-community/geolocation": "^2.0.2",
+    "@react-native-community/netinfo": "^4.3.1",
+    "@types/node": "^12.7.9",
+    "@types/react": "^16.9.4",
+    "graphql-request": "^1.8.2",
+    "mobx": "^5.14.0",
+    "mobx-react": "^6.1.3",
+    "react": "16.9.0",
+    "react-native": "0.61.2",
+    "react-native-elements": "^1.2.4",
+    "react-native-fab": "^1.0.9",
+    "react-native-gesture-handler": "^1.4.1",
+    "react-native-image-picker": "^1.1.0",
+    "react-native-maps": "0.26.1",
+    "react-native-maps-directions": "^1.7.3",
+    "react-native-maps-navigation": "0.0.14",
+    "react-native-vector-icons": "^6.6.0",
+    "react-navigation": "^4.0.7",
+    "react-navigation-drawer": "^2.2.2",
+    "react-navigation-stack": "^1.9.3",
+    "react-navigation-tabs": "^2.5.3",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.14",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^4.1.0",
+    "typeorm": "^0.2.19",
+    "validate.js": "^0.13.1",
+    "react-native-reanimated": "^1.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.6.4",
+    "@babel/runtime": "7.6.3",
+    "@react-native-community/eslint-config": "0.0.3",
+    "@babel/plugin-proposal-decorators": "^7.6.0",
+    "babel-jest": "24.9.0",
+    "eslint": "6.5.1",
+    "jest": "24.9.0",
+    "metro-react-native-babel-preset": "0.51.1",
+    "react-test-renderer": "16.9.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
