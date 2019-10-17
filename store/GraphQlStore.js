@@ -9,11 +9,11 @@ import Snackbar from 'react-native-snackbar';
 
 class GraphQlStore {
 
-    @observable categories = [];
-    @observable places = [];
-    @observable features = [];
-    @observable items = [];
-    @observable loading = false;
+    @observable.ref categories = [{}];
+    @observable.ref places = [{}];
+    @observable.ref features = [{}];
+    @observable.ref items = [{}];
+    @observable.ref loading = false;
 
     client = new GraphQLClient(BASE_URL, {
         headers: {
@@ -46,14 +46,14 @@ class GraphQlStore {
         });
     }
 
-    @action.bound
-    getAllPlaces() {
-        this.loading = true;
-        this.client.request(placesQuery)
+
+   async getAllPlaces() {
+      this.loading = true;
+      await this.client.request(placesQuery)
             .then(result => {
-                console.log("Places data ->", result);
                 result["allPlaces"].forEach((n) => {
                     let p = new Place();
+                    let locations=[];
                     p.id = n["id"];
                     p.label = n["label"];
                     p.logo = n["logo"];
@@ -62,11 +62,13 @@ class GraphQlStore {
                         l.id = i["id"];
                         l.latitude = i["latitude"];
                         l.longitude = i["longitude"];
-                        p.locations.push(l);
+                        locations.push(l);
                     });
+                    p.locations=locations;
                     this.places.push(p);
+                    console.log("Places data ->", this.places.slice());
+                    this.loading = false;
                 });
-                this.loading = false;
             }).catch((error) => {
             console.log('Error', error);
             Snackbar.show({

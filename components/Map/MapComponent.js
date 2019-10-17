@@ -1,11 +1,12 @@
 import React, {Component} from "react";
-import {View, StyleSheet, Dimensions} from "react-native";
+import {View, StyleSheet, Dimensions,ActivityIndicator,Text} from "react-native";
 import MapView, {MAP_TYPES, Marker} from "react-native-maps";
 import {observer} from "mobx-react";
 import {Icon, SearchBar} from 'react-native-elements';
 import {Button} from "native-base";
 import {GraphQlStore} from "../../store";
 import uuid from 'react-native-uuid';
+import {autorun} from "mobx";
 
 const {width, height} = Dimensions.get('window');
 
@@ -28,6 +29,7 @@ class MapComponent extends Component {
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
             },
+            locations:[{}],
             location: {
                 latitude: 0.0,
                 longitude: 0.0,
@@ -36,8 +38,8 @@ class MapComponent extends Component {
         };
     }
 
-    componentDidMount(): void {
-        GraphQlStore.getAllPlaces();
+   async componentDidMount(): void {
+      await GraphQlStore.getAllPlaces();
     }
 
     updateSearch = search => {
@@ -50,6 +52,7 @@ class MapComponent extends Component {
             scrollEnabled: true,
         };
         const {search} = this.state;
+
         return (
             <View style={styles.container}>
                 <View style={styles.searchBar}>
@@ -60,22 +63,30 @@ class MapComponent extends Component {
                         value={search}
                     />
                 </View>
-                <MapView
-                    style={styles.map}
-                    mapType={MAP_TYPES.HYBRID}
-                    onPress={this.onPress}
-                    initialRegion={this.state.region}
-                    {...mapOptions}>
+                {
+                    GraphQlStore.loading?
+                        <Text>Loading...</Text>
+                        :
+                        <MapView
+                            style={styles.map}
+                            mapType={MAP_TYPES.HYBRID}
+                            onPress={this.onPress}
+                            initialRegion={this.state.region}
+                            {...mapOptions}>
 
-                    {GraphQlStore.places.slice().forEach((p) => (
-                        p.locations.map((m) => {
-                            return <Marker
-                                icon={require('../../assets/sphere.png')}
-                                key={uuid.v1()}
-                                coordinate={m}/>;
-                        })
-                    ))}
-                </MapView>
+                            {GraphQlStore.places.forEach((p) => {
+                                    console.log("Points =>",JSON.stringify(p));
+                                    p.locations.map((m) => {
+                                        return <Marker
+                                            icon={require('../../assets/sphere.png')}
+                                            key={uuid.v1()}
+                                            coordinate={m}/>;
+                                    })
+                                }
+                            )}
+                        </MapView>
+                }
+
             </View>
         );
     }

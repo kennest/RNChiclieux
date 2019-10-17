@@ -1,4 +1,4 @@
-export const categoriesQuery =`{
+export const categoriesQuery = `{
   allCategories(orderBy: createdAt_DESC) {
     id
     label
@@ -10,7 +10,7 @@ export const categoriesQuery =`{
   }
 }`;
 
-export const placesQuery=`{
+export const placesQuery = `{
   allPlaces(orderBy: createdAt_ASC) {
     id
     label
@@ -23,15 +23,36 @@ export const placesQuery=`{
   }
 }`;
 
-export const filterPlaceByLabel=`
+export const filterPlaceByLabel = `
 query($search:String!) {
-  allPlaces(filter: {label_contains: $search}) {
+  allPlaces(filter: { OR:[
+      {label_contains: $search},
+      {categories_some:{features_some:{items_some:{label_contains:$search}}}}
+           ]}) {
     id
     label
+    logo
     locations {
       id
       latitude
       longitude
+      adresse
+    }
+    categories {
+      id
+      label
+      imageUrl
     }
   }
 }`;
+
+export const createClient = `
+mutation($avatar:String,$birthdate:DateTime,$sex:String,$username:String!,$password:String!,$phone:String!) {
+  createClient(avatar: $avatar,
+    birthdate: $birthdate,
+    sex: $sex, 
+    username: $username,
+    password: $password,
+  phone:$phone){id}
+}
+`;

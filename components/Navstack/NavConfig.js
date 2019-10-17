@@ -4,20 +4,20 @@ import {createBottomTabNavigator} from 'react-navigation-tabs';
 import {DrawerComponent, HomeComponent, MapComponent, ProfileComponent} from "../index";
 
  const HomeStack = createStackNavigator({
+     Map: {
+         screen: MapComponent,
+         navigationOptions: () => ({
+             title: null,
+             headerBackTitle: null,
+             headerTransparent: true,
+             header:null
+         }),
+     },
     Home: {
         screen: HomeComponent,
         navigationOptions: () => ({
             title: `Home`,
             headerBackTitle: null,
-        }),
-    },
-    Map: {
-        screen: MapComponent,
-        navigationOptions: () => ({
-            title: null,
-            headerBackTitle: null,
-            headerTransparent: true,
-            header:null
         }),
     },
     Profile: {
@@ -41,7 +41,7 @@ import {DrawerComponent, HomeComponent, MapComponent, ProfileComponent} from "..
         drawerPosition: 'Left',
         contentComponent: DrawerComponent,
         resetOnBlur: true,
-        hideStatusBar: true,
+        hideStatusBar: false,
         backBehavior: "history",
     });
 
