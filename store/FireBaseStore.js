@@ -13,3 +13,5 @@ class FireBaseStore{
     }
 
 }
+
+export default new FireBaseStore;

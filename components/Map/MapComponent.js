@@ -1,8 +1,9 @@
 import React,{Component} from "react";
-import {View, StyleSheet, Dimensions, TextInput} from "react-native";
+import {View, StyleSheet, Dimensions, TextInput, Text, KeyboardAvoidingView} from "react-native";
 import MapView, {MAP_TYPES} from "react-native-maps";
 import {observer} from "mobx-react";
-import SearchBar from 'react-native-search-bar';
+import {Icon, SearchBar} from 'react-native-elements';
+import {Button} from "native-base";
 const {width, height} = Dimensions.get('window');
 
 const ASPECT_RATIO = width / height;
@@ -28,33 +29,38 @@ class MapComponent extends Component {
                 latitude: 0.0,
                 longitude: 0.0,
             },
+            search: '',
         };
     }
+
+    updateSearch = search => {
+        this.setState({ search });
+    };
 
     render() {
         const mapOptions = {
             scrollEnabled: true,
         };
+        const { search } = this.state;
         return (
-            <View style={styles.container}>
-                <View style={styles.searchBar}>
-                    <SearchBar
-                        ref="searchBar"
-                        placeholder="Search"
-                        onChangeText={()=>{}}
-                        onSearchButtonPress={this.refs.searchBar.unFocus}
-                        onCancelButtonPress={()=>{}}
-                    />
-                </View>
-                <MapView
-                    style={styles.map}
-                    mapType={MAP_TYPES.HYBRID}
-                    onPress={this.onPress}
-                    initialRegion={this.state.region}
-                    {...mapOptions}>
+                <View style={styles.container}>
+                    <View style={styles.searchBar}>
+                        <SearchBar
+                            lightTheme={true}
+                            placeholder="Rechercher..."
+                            onChangeText={this.updateSearch}
+                            value={search}
+                        />
+                    </View>
+                    <MapView
+                        style={styles.map}
+                        mapType={MAP_TYPES.HYBRID}
+                        onPress={this.onPress}
+                        initialRegion={this.state.region}
+                        {...mapOptions}>
 
-                </MapView>
-            </View>
+                    </MapView>
+                </View>
         );
     }
 }
@@ -62,7 +68,7 @@ class MapComponent extends Component {
 const styles = StyleSheet.create({
     container: {
         ...StyleSheet.absoluteFillObject,
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         flex: 1
     },
@@ -70,8 +76,10 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
     },
     searchBar:{
+        flex:1,
         position:'absolute',
-        margin:10
+        zIndex:300,
+        width:'100%'
     }
 });
 

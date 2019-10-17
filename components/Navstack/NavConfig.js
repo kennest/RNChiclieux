@@ -14,8 +14,10 @@ import {DrawerComponent, HomeComponent, MapComponent, ProfileComponent} from "..
     Map: {
         screen: MapComponent,
         navigationOptions: () => ({
-            title: `Maps`,
+            title: null,
             headerBackTitle: null,
+            headerTransparent: true,
+            header:null
         }),
     },
     Profile: {
