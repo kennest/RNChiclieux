@@ -3,6 +3,10 @@ export const categoriesQuery =`{
     id
     label
     imageUrl
+     places {
+      id
+      label
+    }
   }
 }`;
 
@@ -30,5 +34,4 @@ query($search:String!) {
       longitude
     }
   }
-}
-`;
+}`;

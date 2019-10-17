@@ -40,6 +40,8 @@ target 'RNChiclieux' do
   pod 'Firebase/Firestore', '~> 6.3.0'
   pod 'Firebase/Storage', '~> 6.3.0'
 
+  pod 'RNCPushNotificationIOS', :path => '../node_modules/@react-native-community/push-notification-ios'
+
   target 'RNChiclieuxTests' do
     inherit! :search_paths
     # Pods for testing

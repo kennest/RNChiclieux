@@ -1,8 +1,5 @@
-import {Entity, PrimaryColumn, Column, ManyToOne} from "typeorm";
-
-@Entity()
+import {Location} from './Location';
 export class Place{
-    @PrimaryColumn()
     id:String;
     label:String;
     logo:String;
