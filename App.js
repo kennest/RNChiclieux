@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import React from 'react';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -33,6 +34,7 @@ class App extends React.Component {
     // TODO: You: Do firebase things
     // await firebase.analytics().logEvent('foo', { bar: '123'});
    GraphQlStore.getAllCategories();
+   GraphQlStore.getAllPlaces();
   }
   
   render() {

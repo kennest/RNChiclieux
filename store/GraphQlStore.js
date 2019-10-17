@@ -42,13 +42,20 @@ import {Place} from "../models/Place";
          this.loading=true;
          this.client.request(placesQuery)
              .then(result =>{
-                 console.log("Categories data ->",result);
+                 console.log("Places data ->",result);
                  result["allPlaces"].forEach((n)=>{
                      let p=new Place();
                      p.id=n["id"];
                      p.label=n["label"] ;
                      p.logo=n["logo"];
-                     this.categories.push(c);
+                     n["locations"].forEach((i)=>{
+                         let l=new Location();
+                         l.id=i["id"];
+                         l.latitude=i["latitude"];
+                         l.longitude=i["longitude"];
+                         p.locations.push(l);
+                     });
+                     this.places.push(p);
                  });
                  this.loading=false;
              }).catch((error)=>{
