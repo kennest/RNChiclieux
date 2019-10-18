@@ -1,9 +1,8 @@
 import React, {Component} from "react";
-import {View, StyleSheet, Dimensions,ActivityIndicator,Text} from "react-native";
+import {View, StyleSheet, Dimensions, ActivityIndicator, Text, Image} from "react-native";
 import MapView, {MAP_TYPES, Marker} from "react-native-maps";
 import {observer} from "mobx-react";
-import {Icon, SearchBar} from 'react-native-elements';
-import {Button} from "native-base";
+import { SearchBar} from 'react-native-elements';
 import {GraphQlStore} from "../../store";
 import uuid from 'react-native-uuid';
 import {autorun} from "mobx";
@@ -29,7 +28,7 @@ class MapComponent extends Component {
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA,
             },
-            locations:[{}],
+            positions: [],
             location: {
                 latitude: 0.0,
                 longitude: 0.0,
@@ -38,8 +37,27 @@ class MapComponent extends Component {
         };
     }
 
-   async componentDidMount(): void {
-      await GraphQlStore.getAllPlaces();
+    componentDidMount(): void {
+        GraphQlStore.getAllPlaces();
+
+        autorun((reaction) => {
+            GraphQlStore.places.slice().forEach((p) => {
+                console.log("Positions Autorun => ", p.locations);
+                p.locations.forEach((n)=>{
+                    const positions = [...this.state.positions];
+                    positions.push(n);
+                    this.setState({
+                        positions
+                    })
+                })
+                /*const positions = [...this.state.positions];
+                positions.push(p);
+                this.setState({
+                    positions
+                })*/
+            });
+            reaction.dispose();
+        },{delay:500})
     }
 
     updateSearch = search => {
@@ -63,30 +81,23 @@ class MapComponent extends Component {
                         value={search}
                     />
                 </View>
-                {
-                    GraphQlStore.loading?
-                        <Text>Loading...</Text>
-                        :
-                        <MapView
-                            style={styles.map}
-                            mapType={MAP_TYPES.HYBRID}
-                            onPress={this.onPress}
-                            initialRegion={this.state.region}
-                            {...mapOptions}>
-
-                            {GraphQlStore.places.forEach((p) => {
-                                    console.log("Points =>",JSON.stringify(p));
-                                    p.locations.map((m) => {
-                                        return <Marker
-                                            icon={require('../../assets/sphere.png')}
-                                            key={uuid.v1()}
-                                            coordinate={m}/>;
-                                    })
-                                }
-                            )}
-                        </MapView>
-                }
-
+                <MapView
+                    style={styles.map}
+                    mapType={MAP_TYPES.HYBRID}
+                    onPress={this.onPress}
+                    initialRegion={this.state.region}
+                    {...mapOptions}>
+                    {
+                        this.state.positions.map((n) => (
+                                <Marker
+                                    icon={require('../../assets/sphere.png')}
+                                    title={`${n.title}`}
+                                    key={uuid.v1()}
+                                    coordinate={n}/>
+                            )
+                        )
+                    }
+                </MapView>
             </View>
         );
     }
