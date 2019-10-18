@@ -46,6 +46,24 @@ query($search:String!) {
   }
 }`;
 
+
+export const filterPlaceByCategoryLabel = `
+query($search:String!) {
+  allPlaces(filter: { 
+      categories_some:{label_contains:$search}
+           }) {
+    id
+    label
+    logo
+    locations {
+      id
+      latitude
+      longitude
+      adresse
+    }
+  }
+}`;
+
 export const createClient = `
 mutation($avatar:String,$birthdate:DateTime,$sex:String,$username:String!,$password:String!,$phone:String!) {
   createClient(avatar: $avatar,

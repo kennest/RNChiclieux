@@ -1,7 +1,7 @@
 import {GraphQLClient} from 'graphql-request';
 import {action, observable} from "mobx";
 import {BASE_URL, GRAPHCOOL_TOKEN} from "../utils/Constants";
-import {categoriesQuery, placesQuery, filterPlaceByLabel} from "../graphql/Queries";
+import {categoriesQuery, placesQuery, filterPlaceByLabel,filterPlaceByCategoryLabel} from "../graphql/Queries";
 import {Category} from "../models/Category";
 import {Place} from "../models/Place";
 import {Location} from "../models/Location";
@@ -96,13 +96,13 @@ class GraphQlStore {
         });
     }
 
-    filterPlaces(search: String) {
+    filterPlacesByLabel(search: String) {
         const variables = {
             search: search,
         };
         this.client.request(filterPlaceByLabel, variables)
             .then(result => {
-                //console.log("GraphQl Filter Places data ->", result);
+                console.log("GraphQl Filter Places data ->", result);
                 result["allPlaces"].forEach((n) => {
                     let p = new Place();
                     let locations=[];
@@ -126,6 +126,49 @@ class GraphQlStore {
                         //console.log('Favoris data :',this.films);
                     }
                         this.places.push(p);
+                });
+                this.loading = false;
+            }).catch((error) => {
+            console.log('Error', error);
+            Snackbar.show({
+                title: `${error.message}`,
+                duration: Snackbar.LENGTH_LONG,
+                color: "#fff"
+            });
+            this.loading = false;
+        });
+    }
+
+    filterPlacesByCategoryLabel(search: String) {
+        const variables = {
+            search: search,
+        };
+        this.client.request(filterPlaceByCategoryLabel, variables)
+            .then(result => {
+                console.log("GraphQl Filter Places data ->", result);
+                result["allPlaces"].forEach((n) => {
+                    let p = new Place();
+                    let locations=[];
+                    p.id = n["id"];
+                    p.label = n["label"];
+                    p.logo = n["logo"];
+                    n["locations"].forEach((i) => {
+                        let l = new Location();
+                        l.id = i["id"];
+                        l.latitude = i["latitude"];
+                        l.longitude = i["longitude"];
+                        l.image=p.logo;
+                        l.title=p.label;
+                        locations.push(l);
+                    });
+                    p.locations=locations;
+                    const indexFound= this.places.findIndex(item=>item.id === p.id);
+                    if(indexFound !== -1){
+                        //suppression
+                        this.places= this.places.filter((item,index) => index !== indexFound);
+                        //console.log('Favoris data :',this.films);
+                    }
+                    this.places.push(p);
                 });
                 this.loading = false;
             }).catch((error) => {

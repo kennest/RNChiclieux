@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {View, StyleSheet, Dimensions, ActivityIndicator, Text, Image} from "react-native";
 import MapView, {MAP_TYPES, Marker} from "react-native-maps";
 import {observer} from "mobx-react";
-import { SearchBar} from 'react-native-elements';
+import {SearchBar} from 'react-native-elements';
 import {GraphQlStore} from "../../store";
 import uuid from 'react-native-uuid';
 import {autorun} from "mobx";
@@ -18,6 +18,8 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 @observer
 class MapComponent extends Component {
+
+    _mapView: MapView;
 
     constructor(props) {
         super(props);
@@ -41,27 +43,30 @@ class MapComponent extends Component {
         GraphQlStore.getAllPlaces();
 
         autorun((reaction) => {
+            const positions = [...this.state.positions];
             GraphQlStore.places.slice().forEach((p) => {
-                console.log("Positions Autorun => ", p.locations);
-                p.locations.forEach((n)=>{
-                    const positions = [...this.state.positions];
+                console.log("Positions Autorun => " + p.id, p.locations);
+                p.locations.forEach((n) => {
                     positions.push(n);
                     this.setState({
                         positions
                     })
-                })
-                /*const positions = [...this.state.positions];
-                positions.push(p);
-                this.setState({
-                    positions
-                })*/
+                });
+                this._mapView.fitToCoordinates([...this.state.positions], {
+                    edgePadding: {
+                        top: 30,
+                        right: 30,
+                        bottom: 30,
+                        left: 30
+                    }, animated: true
+                });
             });
             reaction.dispose();
-        },{delay:500})
+        }, {delay: 500})
     }
 
     updateSearch = search => {
-        GraphQlStore.filterPlaces(search);
+        GraphQlStore.filterPlacesByCategoryLabel(search);
         this.setState({search});
     };
 
@@ -82,10 +87,14 @@ class MapComponent extends Component {
                     />
                 </View>
                 <MapView
+                    ref={(mapView) => {
+                        this._mapView = mapView;
+                    }}
                     style={styles.map}
                     mapType={MAP_TYPES.HYBRID}
                     onPress={this.onPress}
                     initialRegion={this.state.region}
+                    showsTraffic={true}
                     {...mapOptions}>
                     {
                         this.state.positions.map((n) => (
