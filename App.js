@@ -11,9 +11,7 @@ import {Provider as MobXProvider, observer} from "mobx-react";
 import {GraphQlStore} from "./store";
 var PushNotification = require("react-native-push-notification");
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
-
-
-
+import Pusher from 'pusher-js/react-native';
 
 
 //To load fonts on Start
@@ -59,12 +57,27 @@ class App extends React.Component {
 
   }
 
+  checkPusher(){
+      Pusher.logToConsole = true;
+
+      var pusher = new Pusher('3f1e60f7f215183d9a87', {
+          cluster: 'eu',
+          forceTLS: true
+      });
+
+      var channel = pusher.subscribe('my-channel');
+      channel.bind('my-event', function(data) {
+          alert(JSON.stringify(data));
+      });
+  }
+
   async componentDidMount():void {
     // TODO: You: Do firebase things
     // await firebase.analytics().logEvent('foo', { bar: '123'});
    GraphQlStore.getAllCategories();
    GraphQlStore.getAllPlaces();
    setInterval(GraphQlStore.findNearestPoint,60000);
+   this.checkPusher();
   }
   
   render() {

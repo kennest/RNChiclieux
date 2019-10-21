@@ -1,11 +1,13 @@
 import React, {Component} from "react";
 import {View, StyleSheet, Dimensions, ActivityIndicator, Text, Image} from "react-native";
 import MapView, {MAP_TYPES, Marker} from "react-native-maps";
+import { ClusterMap} from "react-native-cluster-map";
 import {observer} from "mobx-react";
 import {SearchBar} from 'react-native-elements';
 import {GraphQlStore} from "../../store";
 import uuid from 'react-native-uuid';
 import {autorun} from "mobx";
+import {MyCluster} from "./MyCluster";
 
 const {width, height} = Dimensions.get('window');
 
@@ -52,14 +54,14 @@ class MapComponent extends Component {
                         positions
                     })
                 });
-                this._mapView.fitToCoordinates([...this.state.positions], {
+                /*this._mapView.fitToCoordinates([...this.state.positions], {
                     edgePadding: {
                         top: 30,
                         right: 30,
                         bottom: 30,
                         left: 30
                     }, animated: true
-                });
+                });*/
             });
             reaction.dispose();
         }, {delay: 500})
@@ -69,6 +71,8 @@ class MapComponent extends Component {
         GraphQlStore.filterPlacesByCategoryLabel(search);
         this.setState({search});
     };
+
+    renderCustomClusterMarker = (count) => <MyCluster count={count} />;
 
     render() {
         const mapOptions = {
@@ -86,14 +90,15 @@ class MapComponent extends Component {
                         value={search}
                     />
                 </View>
-                <MapView
+                <ClusterMap
                     ref={(mapView) => {
                         this._mapView = mapView;
                     }}
                     style={styles.map}
                     mapType={MAP_TYPES.HYBRID}
+                    renderClusterMarker={this.renderCustomClusterMarker}
                     onPress={this.onPress}
-                    initialRegion={this.state.region}
+                    region={this.state.region}
                     showsTraffic={true}
                     {...mapOptions}>
                     {
@@ -106,7 +111,7 @@ class MapComponent extends Component {
                             )
                         )
                     }
-                </MapView>
+                </ClusterMap>
             </View>
         );
     }

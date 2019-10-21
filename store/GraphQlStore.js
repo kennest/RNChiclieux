@@ -16,7 +16,7 @@ class GraphQlStore {
     @observable features = [];
     @observable items = [];
     @observable loading = false;
-    @observable location = {};
+    @observable me = {};
 
     client = new GraphQLClient(BASE_URL, {
         headers: {
