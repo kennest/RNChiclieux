@@ -1,11 +1,12 @@
 import {GraphQLClient} from 'graphql-request';
 import {action, observable} from "mobx";
-import {BASE_URL, GRAPHCOOL_TOKEN} from "../utils/Constants";
-import {categoriesQuery, placesQuery, filterPlaceByLabel,filterPlaceByCategoryLabel} from "../graphql/Queries";
+import {BASE_URL, GRAPHCOOL_TOKEN, SERVERLESS_HEROKU} from "../utils/Constants";
+import {categoriesQuery, placesQuery, filterPlaceByLabel, filterPlaceByCategoryLabel} from "../graphql/Queries";
 import {Category} from "../models/Category";
 import {Place} from "../models/Place";
 import {Location} from "../models/Location";
 import Snackbar from 'react-native-snackbar';
+import Geolocation from '@react-native-community/geolocation';
 
 class GraphQlStore {
 
@@ -15,6 +16,7 @@ class GraphQlStore {
     @observable features = [];
     @observable items = [];
     @observable loading = false;
+    @observable location = {};
 
     client = new GraphQLClient(BASE_URL, {
         headers: {
@@ -47,12 +49,12 @@ class GraphQlStore {
     }
 
     getAllPlaces() {
-      this.loading = true;
-      this.client.request(placesQuery)
+        this.loading = true;
+        this.client.request(placesQuery)
             .then(result => {
                 result["allPlaces"].forEach((n) => {
                     let p = new Place();
-                    let locations=[];
+                    let locations = [];
                     p.id = n["id"];
                     p.label = n["label"];
                     p.logo = n["logo"];
@@ -61,23 +63,23 @@ class GraphQlStore {
                         l.id = i["id"];
                         l.latitude = i["latitude"];
                         l.longitude = i["longitude"];
-                        l.image=p.logo;
-                        l.title=p.label;
+                        l.image = p.logo;
+                        l.title = p.label;
                         locations.push(l);
                     });
-                    p.locations=locations;
-                    const indexFound= this.places.findIndex(item=>item.id === p.id);
-                    if(indexFound !== -1){
+                    p.locations = locations;
+                    const indexFound = this.places.findIndex(item => item.id === p.id);
+                    if (indexFound !== -1) {
                         //suppression
-                        this.places= this.places.filter((item,index) => index !== indexFound);
+                        this.places = this.places.filter((item, index) => index !== indexFound);
                         //console.log('Favoris data :',this.films);
                     }
-                        this.places.push(p);
+                    this.places.push(p);
 
                     //console.log("GraphQl Places data ->", this.places.slice());
                     this.loading = false;
                 });
-            },(reject)=>{
+            }, (reject) => {
                 console.log('Error', reject);
                 Snackbar.show({
                     title: `${reject}`,
@@ -105,7 +107,7 @@ class GraphQlStore {
                 console.log("GraphQl Filter Places data ->", result);
                 result["allPlaces"].forEach((n) => {
                     let p = new Place();
-                    let locations=[];
+                    let locations = [];
                     p.id = n["id"];
                     p.label = n["label"];
                     p.logo = n["logo"];
@@ -114,18 +116,18 @@ class GraphQlStore {
                         l.id = i["id"];
                         l.latitude = i["latitude"];
                         l.longitude = i["longitude"];
-                        l.image=p.logo;
-                        l.title=p.label;
+                        l.image = p.logo;
+                        l.title = p.label;
                         locations.push(l);
                     });
-                    p.locations=locations;
-                    const indexFound= this.places.findIndex(item=>item.id === p.id);
-                    if(indexFound !== -1){
+                    p.locations = locations;
+                    const indexFound = this.places.findIndex(item => item.id === p.id);
+                    if (indexFound !== -1) {
                         //suppression
-                        this.places= this.places.filter((item,index) => index !== indexFound);
+                        this.places = this.places.filter((item, index) => index !== indexFound);
                         //console.log('Favoris data :',this.films);
                     }
-                        this.places.push(p);
+                    this.places.push(p);
                 });
                 this.loading = false;
             }).catch((error) => {
@@ -148,7 +150,7 @@ class GraphQlStore {
                 console.log("GraphQl Filter Places data ->", result);
                 result["allPlaces"].forEach((n) => {
                     let p = new Place();
-                    let locations=[];
+                    let locations = [];
                     p.id = n["id"];
                     p.label = n["label"];
                     p.logo = n["logo"];
@@ -157,15 +159,15 @@ class GraphQlStore {
                         l.id = i["id"];
                         l.latitude = i["latitude"];
                         l.longitude = i["longitude"];
-                        l.image=p.logo;
-                        l.title=p.label;
+                        l.image = p.logo;
+                        l.title = p.label;
                         locations.push(l);
                     });
-                    p.locations=locations;
-                    const indexFound= this.places.findIndex(item=>item.id === p.id);
-                    if(indexFound !== -1){
+                    p.locations = locations;
+                    const indexFound = this.places.findIndex(item => item.id === p.id);
+                    if (indexFound !== -1) {
                         //suppression
-                        this.places= this.places.filter((item,index) => index !== indexFound);
+                        this.places = this.places.filter((item, index) => index !== indexFound);
                         //console.log('Favoris data :',this.films);
                     }
                     this.places.push(p);
@@ -180,6 +182,46 @@ class GraphQlStore {
             });
             this.loading = false;
         });
+    }
+
+    findNearestPoint() {
+        Geolocation.getCurrentPosition(
+            (position) => {
+                console.info("My Location =>", JSON.stringify(position));
+                fetch(SERVERLESS_HEROKU + '/nearest', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        radius: 2000
+                    }),
+                })
+                    .then(response => response.json())
+                    .then((data) => {
+                        Snackbar.show({
+                            title: `${data.length} Endroits Trouvés à 2 Km de vous`,
+                            duration: Snackbar.LENGTH_LONG,
+                            color: "#fff"
+                        });
+                    console.log("Find in Radius of 2 Km => ", data);
+                });
+            },
+            (error) => {
+                // See error code charts below.
+                console.info(error.code, error.message);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 10000,
+                useSignificantChanges: true,
+                distanceFilter: 0
+            }
+        );
     }
 
 }

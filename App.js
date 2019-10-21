@@ -64,6 +64,7 @@ class App extends React.Component {
     // await firebase.analytics().logEvent('foo', { bar: '123'});
    GraphQlStore.getAllCategories();
    GraphQlStore.getAllPlaces();
+   setInterval(GraphQlStore.findNearestPoint,60000);
   }
   
   render() {
