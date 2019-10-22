@@ -1,10 +1,7 @@
 import React, {Component} from "react";
-import {Image, ActivityIndicator, Text, View, Button, default as Alert} from "react-native";
+import { ActivityIndicator, View, Button, default as Alert} from "react-native";
 import {FireBaseStore} from "../../store";
-import {AccessToken, GraphRequest, grm as GraphRequestManager, LoginButton} from 'react-native-fbsdk';
-import firebase from "react-native-firebase";
 import {autorun} from "mobx";
-import AsyncStorage from "@react-native-community/async-storage";
 
 class SplashComponent extends Component {
 
@@ -22,7 +19,7 @@ class SplashComponent extends Component {
        setTimeout(() => {
            autorun(async ()=>{
                if(FireBaseStore.isLoggedIn) {
-                   this.props.navigation.navigate('Map');
+                   this.props.navigation.navigate('Home');
                }
            })
        }, 1000);
@@ -53,43 +50,7 @@ class SplashComponent extends Component {
                 <Button title="Login with facebook" onPress={async ()=>{
                    await FireBaseStore.facebookLogin();
                 }} />
-                <LoginButton
-                readPermissions={['public_profile']}
-                onLoginFinished={(error, result) => {
-                if (error) {
-                    console.log(error.message);
-                    console.log('login has error: ' + result.error);
-                } else if (result.isCancelled) {
-                    console.log('login is cancelled.');
-                } else {
-                    AccessToken.getCurrentAccessToken().then(async data => {
 
-                        console.log(data.accessToken.toString());
-                        const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
-
-                        // login with credential
-                        const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
-
-
-                        var user=firebaseUserCredential.user.toJSON();
-
-                        if(user!==null){
-                            FireBaseStore.isLoggedIn=true;
-                            this.props.navigation.navigate('Home')
-                        }
-                        console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()));
-                        const processRequest = new GraphRequest(
-                            '/me?fields=name,picture.type(large)',
-                            null,
-                            this.get_Response_Info
-                        );
-                        // Start the graph request.
-                       let grm= new GraphRequestManager();
-                       grm.addRequest(processRequest).start();
-                    });
-                }
-            }}
-                onLogoutFinished={this.onLogout}/>
             </View>
         );
     }

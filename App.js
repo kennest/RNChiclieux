@@ -5,7 +5,7 @@ import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import {HomeStack,DrawerNav} from './components/Navstack/NavConfig'
+import {HomeStack, DrawerNav, BottomTabNavigator} from './components/Navstack/NavConfig'
 import {SplashComponent} from "./components/index";
 import {Provider as MobXProvider, observer} from "mobx-react";
 import {GraphQlStore} from "./store";
@@ -21,7 +21,7 @@ Fontisto.loadFont().done();
 
 const AppNavigator = createSwitchNavigator({
   Splash: SplashComponent,
-  Home: DrawerNav,
+  Home: BottomTabNavigator,
 }, {
   initialRouteName: "Splash"
 });

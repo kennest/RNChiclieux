@@ -1,13 +1,13 @@
 import React, {Component} from "react";
 import {View, StyleSheet, Dimensions, ActivityIndicator, Text, Image} from "react-native";
-import MapView, {MAP_TYPES, Marker} from "react-native-maps";
-import { ClusterMap} from "react-native-cluster-map";
+import  {MAP_TYPES, Marker} from "react-native-maps";
 import {observer} from "mobx-react";
-import {SearchBar} from 'react-native-elements';
+import SearchBar from 'react-native-search-bar';
 import {GraphQlStore} from "../../store";
 import uuid from 'react-native-uuid';
 import {autorun} from "mobx";
 import {MyCluster} from "./MyCluster";
+import MapView from 'react-native-map-clustering';
 
 const {width, height} = Dimensions.get('window');
 
@@ -15,16 +15,18 @@ const ASPECT_RATIO = width / height;
 
 const LATITUDE = 5.334284;
 const LONGITUDE = -3.955779;
-const LATITUDE_DELTA = 0.0922;
+//const LATITUDE_DELTA = 0.0922;
+const LATITUDE_DELTA = 10;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 @observer
 class MapComponent extends Component {
 
-    _mapView: MapView;
+    map: MapView;
 
     constructor(props) {
         super(props);
+        console.log('Map Props=> ',props);
         this.state = {
             region: {
                 latitude: LATITUDE,
@@ -44,6 +46,7 @@ class MapComponent extends Component {
     componentDidMount(): void {
         GraphQlStore.getAllPlaces();
 
+        //this.refs.searchBar.focus();
         autorun((reaction) => {
             const positions = [...this.state.positions];
             GraphQlStore.places.slice().forEach((p) => {
@@ -54,49 +57,51 @@ class MapComponent extends Component {
                         positions
                     })
                 });
-                /*this._mapView.fitToCoordinates([...this.state.positions], {
-                    edgePadding: {
-                        top: 30,
-                        right: 30,
-                        bottom: 30,
-                        left: 30
-                    }, animated: true
-                });*/
+               //this.fitToCoordinates();
             });
             reaction.dispose();
         }, {delay: 500})
     }
+
+   /* fitToCoordinates(){
+        this.map.fitToCoordinates([...this.state.positions], {
+            edgePadding: {
+                top: 30,
+                right: 30,
+                bottom: 30,
+                left: 30
+            }, animated: true
+        });
+    }*/
 
     updateSearch = search => {
         GraphQlStore.filterPlacesByCategoryLabel(search);
         this.setState({search});
     };
 
-    renderCustomClusterMarker = (count) => <MyCluster count={count} />;
-
     render() {
         const mapOptions = {
             scrollEnabled: true,
         };
-        const {search} = this.state;
 
         return (
             <View style={styles.container}>
                 <View style={styles.searchBar}>
                     <SearchBar
-                        lightTheme={true}
+                        //lightTheme={true}
+                        ref="searchBar"
                         placeholder="Rechercher..."
                         onChangeText={this.updateSearch}
-                        value={search}
+                        onSearchButtonPress={()=>{}}
+                        onCancelButtonPress={()=>{}}
                     />
                 </View>
-                <ClusterMap
-                    ref={(mapView) => {
-                        this._mapView = mapView;
-                    }}
+                <MapView
+                    ref={(map) => { this.map = map; }}
                     style={styles.map}
-                    mapType={MAP_TYPES.HYBRID}
-                    renderClusterMarker={this.renderCustomClusterMarker}
+                    mapType={MAP_TYPES.STANDARD}
+                    clustering={true}
+                    //renderClusterMarker={this.renderCustomClusterMarker}
                     onPress={this.onPress}
                     region={this.state.region}
                     showsTraffic={true}
@@ -107,11 +112,12 @@ class MapComponent extends Component {
                                     icon={require('../../assets/sphere.png')}
                                     title={`${n.title}`}
                                     key={uuid.v1()}
+                                    cluster={true}
                                     coordinate={n}/>
                             )
                         )
                     }
-                </ClusterMap>
+                </MapView>
             </View>
         );
     }
@@ -131,7 +137,8 @@ const styles = StyleSheet.create({
         flex: 1,
         position: 'absolute',
         zIndex: 300,
-        width: '100%'
+        width: '100%',
+        backgroundColor:"rgba(70,7,122,0.67)"
     }
 });
 

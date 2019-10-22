@@ -2,9 +2,18 @@ import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 export const MyCluster = (props) => {
-    const { count } = props;
+    const { count,isplace } = props;
     return (
-        <View style={styles.main}>
+        <View style={
+            {
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                backgroundColor: isplace?'#ff2516':'#5d09a5',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }
+        }>
             <Text>{count}</Text>
         </View>
     )

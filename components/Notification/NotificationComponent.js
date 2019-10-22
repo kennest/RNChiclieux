@@ -2,34 +2,26 @@ import React,{Component} from "react";
 import firebase from "react-native-firebase";
 import {Image, ScrollView, Text, View,StyleSheet} from "react-native";
 import {Button} from "native-base";
+import {FireBaseStore} from "../../store";
+import {AccessToken, GraphRequest, grm as GraphRequestManager, LoginButton} from 'react-native-fbsdk';
 
-class HomeComponent extends Component {
+class NotificationComponent extends Component {
     static navigationOptions =({ navigation }) => {
         // headerTitle instead of title
         return {
-            title: `Chic Lieux`,
+            title: `Mooly`,
             headerTitle:(
-                <Text style={{color:'#FFF',fontSize:20,textAlign:"center"}}>Chic Lieux</Text>
+                <Text style={{color:'#FFF',fontSize:20,textAlign:"center"}}>Mooly</Text>
             ),
             headerStyle: {
-                backgroundColor: '#087415',
+                backgroundColor: '#46077a',
             },
-            headerLeft: (
-                <Button
-                    onPress={() => {
-                    navigation.toggleDrawer();
-                }} transparent>
-                    <Image
-                        source={require('../../assets/menu.png')}
-                        style={{width: 30, height: 30,margin:20,tintColor:'#FFF'}}/>
-                </Button>
-            ),
             headerRight: (
                 <View style={{flex:1,flexDirection:"row"}}>
                     <Button
                         onPress={() => {
                         //navigation.navigate('Map');
-                        navigation.navigate('Map');
+                        navigation.navigate('Home');
                     }} transparent>
                         <Image
                             source={require('../../assets/plus.png')}
@@ -48,6 +40,43 @@ class HomeComponent extends Component {
                     <Text style={styles.welcome}>
                         Welcome to {'\n'} React Native Firebase
                     </Text>
+                    <LoginButton
+                        readPermissions={['public_profile']}
+                        onLoginFinished={(error, result) => {
+                            if (error) {
+                                console.log(error.message);
+                                console.log('login has error: ' + result.error);
+                            } else if (result.isCancelled) {
+                                console.log('login is cancelled.');
+                            } else {
+                                AccessToken.getCurrentAccessToken().then(async data => {
+
+                                    console.log(data.accessToken.toString());
+                                    const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+
+                                    // login with credential
+                                    const firebaseUserCredential = await firebase.auth().signInWithCredential(credential);
+
+
+                                    var user=firebaseUserCredential.user.toJSON();
+
+                                    if(user!==null){
+                                        FireBaseStore.isLoggedIn=true;
+                                        this.props.navigation.navigate('Home')
+                                    }
+                                    console.warn(JSON.stringify(firebaseUserCredential.user.toJSON()));
+                                    const processRequest = new GraphRequest(
+                                        '/me?fields=name,picture.type(large)',
+                                        null,
+                                        this.get_Response_Info
+                                    );
+                                    // Start the graph request.
+                                    let grm= new GraphRequestManager();
+                                    grm.addRequest(processRequest).start();
+                                });
+                            }
+                        }}
+                        onLogoutFinished={this.onLogout}/>
                     <Text style={styles.instructions}>
                         To get started, edit App.js
                     </Text>
@@ -125,4 +154,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default HomeComponent;
+export default NotificationComponent;
