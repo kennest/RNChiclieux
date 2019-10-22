@@ -8,6 +8,7 @@ import {User} from "../models/User";
 class FireBaseStore {
     @observable image = {};
     @observable isLoggedIn = false;
+    @observable user = {};
 
     constructor() {
         this.requestManager = new GraphRequestManager()
@@ -84,10 +85,18 @@ class FireBaseStore {
             loggindUser.fbid = result.id;
             loggindUser.username = result.name;
             loggindUser.avatar = result.picture.data.url;
-            await AsyncStorage.setItem('user Graph => ', JSON.stringify(loggindUser));
+            this.user=loggindUser;
+            await AsyncStorage.setItem('user',JSON.stringify(loggindUser));
             this.isLoggedIn = true;
         }
     };
+
+    async logout(){
+        LoginManager.logOut();
+        await AsyncStorage.removeItem('user').then(value => {
+            this.isLoggedIn = false;
+        });
+    }
 
 }
 

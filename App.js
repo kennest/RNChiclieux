@@ -60,12 +60,12 @@ class App extends React.Component {
   checkPusher(){
       Pusher.logToConsole = true;
 
-      var pusher = new Pusher('3f1e60f7f215183d9a87', {
+      let pusher = new Pusher('3f1e60f7f215183d9a87', {
           cluster: 'eu',
           forceTLS: true
       });
 
-      var channel = pusher.subscribe('my-channel');
+      let channel = pusher.subscribe('my-channel');
       channel.bind('my-event', function(data) {
           alert(JSON.stringify(data));
       });

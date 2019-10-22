@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Image, ScrollView, Text, View, StyleSheet, FlatList, TouchableOpacity} from "react-native";
 import {Button} from "native-base";
 import {observer} from "mobx-react";
+import {FireBaseStore} from "../../store";
 
 @observer
 class ProfileComponent extends Component {
@@ -68,6 +69,11 @@ class ProfileComponent extends Component {
                         alignItems: 'center',
                         justifyContent: 'center',
                         elevation: 0
+                    }} onPress={()=>{
+                        FireBaseStore.logout().then((res)=>{
+
+                        });
+                        this.props.navigation.navigate("Splash");
                     }}>
                         <Text style={{
                             color: "#fff"
