@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {View, StyleSheet, Dimensions, ActivityIndicator, Text, Image} from "react-native";
+import {View, StyleSheet, Dimensions, ActivityIndicator, Text, TextInput} from "react-native";
 import  {MAP_TYPES, Marker} from "react-native-maps";
 import {observer} from "mobx-react";
 import SearchBar from 'react-native-search-bar';
@@ -8,6 +8,7 @@ import uuid from 'react-native-uuid';
 import {autorun} from "mobx";
 import {MyCluster} from "./MyCluster";
 import MapView from 'react-native-map-clustering';
+import RBSheet from "react-native-raw-bottom-sheet";
 
 const {width, height} = Dimensions.get('window');
 
@@ -87,14 +88,22 @@ class MapComponent extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.searchBar}>
-                    <SearchBar
-                        //lightTheme={true}
-                        ref="searchBar"
-                        placeholder="Rechercher..."
-                        onChangeText={this.updateSearch}
-                        onSearchButtonPress={()=>{}}
-                        onCancelButtonPress={()=>{}}
-                    />
+                    <Text style={{
+                        fontSize:30,
+                        color:'#fff',
+                        margin:10
+                    }}>Maps</Text>
+                    <TextInput
+                        style={{
+                            backgroundColor:'rgba(176,17,255,0.57)',
+                            margin:5,
+                            color:'#fff',
+                            borderRadius:5
+                        }}
+                        placeholderTextColor={'whiye'}
+                        placeholder="Rechercher..." onChangeText={(value)=>{
+                        GraphQlStore.filterPlacesByCategoryLabel(value);
+                    }} />
                 </View>
                 <MapView
                     ref={(map) => { this.map = map; }}
@@ -109,6 +118,9 @@ class MapComponent extends Component {
                     {
                         this.state.positions.map((n) => (
                                 <Marker
+                                    onPress={(e)=>{
+                                        this.RBSheet.open();
+                                    }}
                                     icon={require('../../assets/sphere.png')}
                                     title={`${n.title}`}
                                     key={uuid.v1()}
@@ -118,6 +130,21 @@ class MapComponent extends Component {
                         )
                     }
                 </MapView>
+                <RBSheet
+                    ref={ref => {
+                        this.RBSheet = ref;
+                    }}
+                    height={300}
+                    duration={250}
+                    customStyles={{
+                        container: {
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }
+                    }}
+                >
+                    <ActivityIndicator size="large" />
+                </RBSheet>
             </View>
         );
     }
@@ -128,17 +155,19 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        flex: 1
+        flex: 1,
+        backgroundColor:"rgba(70,7,122,0.67)"
     },
     map: {
         ...StyleSheet.absoluteFillObject,
     },
     searchBar: {
         flex: 1,
+        flexDirection:'column',
         position: 'absolute',
         zIndex: 300,
         width: '100%',
-        backgroundColor:"rgba(70,7,122,0.67)"
+        backgroundColor:"rgba(70,20,120,1)"
     }
 });
 

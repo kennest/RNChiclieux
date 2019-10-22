@@ -65,7 +65,7 @@ class App extends React.Component {
           forceTLS: true
       });
 
-      let channel = pusher.subscribe('my-channel');
+      let channel = pusher.subscribe('mooly');
       channel.bind('my-event', function(data) {
           alert(JSON.stringify(data));
       });
@@ -76,7 +76,7 @@ class App extends React.Component {
     // await firebase.analytics().logEvent('foo', { bar: '123'});
    GraphQlStore.getAllCategories();
    GraphQlStore.getAllPlaces();
-   setInterval(GraphQlStore.findNearestPoint,60000);
+   setInterval(GraphQlStore.findNearestPoint,240000);
    this.checkPusher();
   }
   

@@ -38,12 +38,6 @@ class ProfileComponent extends Component {
         }
     };
 
-    items = [
-        {id: "Notifications", title: "Notifications", value: 3},
-        {id: "Wiggle", title: "Wiggle", value: 4},
-        {id: "Policy", title: "Politique de confidentialité", value: 0},
-        {id: "Terms", title: "Conditions et termes", value: 0},
-    ];
 
     render() {
         return (
@@ -59,8 +53,10 @@ class ProfileComponent extends Component {
                             margin: 5,
                             resizeMode: 'cover'
                         }}
-                        source={{uri: "https://d2gg9evh47fn9z.cloudfront.net/800px_COLOURBOX4282922.jpg"}}/>
-                    <Text>John Doe</Text>
+                        //source={{uri: "https://d2gg9evh47fn9z.cloudfront.net/800px_COLOURBOX4282922.jpg"}}
+                        source={{uri: `${FireBaseStore.user.avatar}`}}
+                    />
+                    <Text>{FireBaseStore.user.username}</Text>
                     <Button style={{
                         borderRadius: 5,
                         margin: 10,
@@ -70,25 +66,15 @@ class ProfileComponent extends Component {
                         justifyContent: 'center',
                         elevation: 0
                     }} onPress={()=>{
-                        FireBaseStore.logout().then((res)=>{
+                        FireBaseStore.facebookLogout().then((res)=>{
 
                         });
                         this.props.navigation.navigate("Splash");
                     }}>
                         <Text style={{
                             color: "#fff"
-                        }}>Deconnecter</Text>
+                        }}>Se Deconnecter</Text>
                     </Button>
-                    <View style={{flex: 1,marginTop:20}}>
-                        <FlatList data={this.items} renderItem={({item}) => (
-                            <TouchableOpacity>
-                                <View style={{flexDirection:'row',alignContent:'center',justifyContent:'space-between'}}>
-                                    <Text style={{fontSize:20}}>{item.title}</Text>
-                                    <Image style={{tintColor:"#787878"}} source={require('../../assets/chevron-right.png')}/>
-                                </View>
-                            </TouchableOpacity>
-                        )}/>
-                    </View>
                 </View>
             </ScrollView>
 

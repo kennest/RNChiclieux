@@ -47,10 +47,14 @@ class SplashComponent extends Component {
         return (
             <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
                 <ActivityIndicator size="large"/>
-                <Button title="Login with facebook" onPress={async ()=>{
-                   await FireBaseStore.facebookLogin();
-                }} />
-
+                {
+                    !FireBaseStore.isLoggedIn
+                        ?
+                        <Button title="Login with facebook" onPress={async ()=>{
+                            await FireBaseStore.facebookLogin();
+                        }} />
+                        :undefined
+                }
             </View>
         );
     }

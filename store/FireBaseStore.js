@@ -91,7 +91,7 @@ class FireBaseStore {
         }
     };
 
-    async logout(){
+    async facebookLogout(){
         LoginManager.logOut();
         await AsyncStorage.removeItem('user').then(value => {
             this.isLoggedIn = false;

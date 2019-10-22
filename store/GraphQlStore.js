@@ -1,5 +1,5 @@
 import {GraphQLClient} from 'graphql-request';
-import {action, observable} from "mobx";
+import {observable} from "mobx";
 import {BASE_URL, GRAPHCOOL_TOKEN, SERVERLESS_HEROKU} from "../utils/Constants";
 import {categoriesQuery, placesQuery, filterPlaceByLabel, filterPlaceByCategoryLabel} from "../graphql/Queries";
 import {Category} from "../models/Category";
