@@ -55,7 +55,7 @@
     "reanimated-bottom-sheet": "^1.0.0-alpha.14",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^4.1.0",
-    "typeorm": "^0.2.19",
+    "typeorm": "^0.2.25",
     "validate.js": "^0.13.1",
     "ws": ">=3.3.1"
   },
